@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="DesignSurface">
+    <option name="filePathToZoomLevelMap">
+      <map>
+        <entry key="..\:/Users/Duc/AndroidStudioProjects/WEBRTCDEMO/app/src/main/res/drawable/button.xml" value="0.3828125" />
+        <entry key="..\:/Users/Duc/AndroidStudioProjects/WEBRTCDEMO/app/src/main/res/drawable/button_login.xml" value="0.3828125" />
+        <entry key="..\:/Users/Duc/AndroidStudioProjects/WEBRTCDEMO/app/src/main/res/drawable/button_register.xml" value="0.3828125" />
+        <entry key="..\:/Users/Duc/AndroidStudioProjects/WEBRTCDEMO/app/src/main/res/drawable/cerclebackground.xml" value="0.28177083333333336" />
+        <entry key="..\:/Users/Duc/AndroidStudioProjects/WEBRTCDEMO/app/src/main/res/drawable/cerclebackground_btn.xml" value="0.22135416666666666" />
+        <entry key="..\:/Users/Duc/AndroidStudioProjects/WEBRTCDEMO/app/src/main/res/drawable/textbox.xml" value="0.3828125" />
+        <entry key="..\:/Users/Duc/AndroidStudioProjects/WEBRTCDEMO/app/src/main/res/drawable/usericon_background.xml" value="0.28177083333333336" />
+        <entry key="..\:/Users/Duc/AndroidStudioProjects/WEBRTCDEMO/app/src/main/res/layout/activity_call.xml" value="0.2598958333333333" />
+        <entry key="..\:/Users/Duc/AndroidStudioProjects/WEBRTCDEMO/app/src/main/res/layout/activity_dashboard.xml" value="0.36666666666666664" />
+        <entry key="..\:/Users/Duc/AndroidStudioProjects/WEBRTCDEMO/app/src/main/res/layout/activity_login.xml" value="0.36666666666666664" />
+        <entry key="..\:/Users/Duc/AndroidStudioProjects/WEBRTCDEMO/app/src/main/res/layout/activity_main.xml" value="0.2957427536231884" />
+        <entry key="..\:/Users/Duc/AndroidStudioProjects/WEBRTCDEMO/app/src/main/res/layout/activity_message.xml" value="0.14791666666666667" />
+        <entry key="..\:/Users/Duc/AndroidStudioProjects/WEBRTCDEMO/app/src/main/res/layout/activity_register.xml" value="0.33" />
+        <entry key="..\:/Users/Duc/AndroidStudioProjects/WEBRTCDEMO/app/src/main/res/layout/activity_sign_up.xml" value="0.33" />
+        <entry key="..\:/Users/Duc/AndroidStudioProjects/WEBRTCDEMO/app/src/main/res/layout/error_popup.xml" value="0.20520833333333333" />
+        <entry key="..\:/Users/Duc/AndroidStudioProjects/WEBRTCDEMO/app/src/main/res/layout/fragment_chat.xml" value="0.2640625" />
+        <entry key="..\:/Users/Duc/AndroidStudioProjects/WEBRTCDEMO/app/src/main/res/layout/fragment_history.xml" value="0.2640625" />
+        <entry key="..\:/Users/Duc/AndroidStudioProjects/WEBRTCDEMO/app/src/main/res/layout/fragment_home.xml" value="0.2640625" />
+        <entry key="..\:/Users/Duc/AndroidStudioProjects/WEBRTCDEMO/app/src/main/res/layout/fragment_user.xml" value="0.2640625" />
+        <entry key="..\:/Users/Duc/AndroidStudioProjects/WEBRTCDEMO/app/src/main/res/layout/user_item.xml" value="0.26197916666666665" />
+        <entry key="..\:/Users/Duc/AndroidStudioProjects/WEBRTCDEMO/app/src/main/res/menu/menu.xml" value="0.36666666666666664" />
+      </map>
+    </option>
+  </component>
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_11" default="true" project-jdk-name="Android Studio default JDK" project-jdk-type="JavaSDK">
+    <output url="file://$PROJECT_DIR$/build/classes" />
+  </component>
+  <component name="ProjectType">
+    <option name="id" value="Android" />
+  </component>
+</project>

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/menuHome"
+        android:icon="@drawable/home"
+        android:title="Home" />
+    <item
+        android:id="@+id/menuHistory"
+        android:icon="@drawable/clock"
+        android:title="History" />
+    <item
+        android:id="@+id/menuUsers"
+        android:icon="@drawable/profileicon"
+        android:title="Users" />
+    <item
+        android:id="@+id/menuLogout"
+        android:icon="@drawable/logout"
+        android:title="Logout" />
+</menu>
