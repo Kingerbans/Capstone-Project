@@ -12,22 +12,20 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
-import com.example.webrtcdemo.Handler.SocketHandler;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 
 
+
 public class LoginActivity extends AppCompatActivity {
-    private static final String SIGNALING_URI = "http://192.168.1.110:3000";
     EditText edtTxtEmail, edtTxtPassword;
     TextView txtError;
     Button btnLogin, btnRegister, btnBack;
     Dialog myDialog;
     ProgressDialog progressDialog;
     FirebaseAuth firebaseAuth;
-    SocketHandler socketHandler;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,8 +69,6 @@ public class LoginActivity extends AppCompatActivity {
                 public void onComplete(@NonNull Task<AuthResult> task) {
                     progressDialog.dismiss();
                     if (task.isSuccessful()){
-                        socketHandler = new SocketHandler();
-                        socketHandler.getSocket().connect();
                         startActivity(new Intent(LoginActivity.this, DashboardActivity.class));
                         finish();
                     } else {

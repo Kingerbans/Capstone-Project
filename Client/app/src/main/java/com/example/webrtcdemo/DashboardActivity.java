@@ -8,17 +8,20 @@ import androidx.viewpager.widget.ViewPager;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
-import android.view.View;
 
 import com.example.webrtcdemo.Adapter.ViewPagerAdapter;
+import com.example.webrtcdemo.Handler.SocketHandler;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationBarView;
 import com.google.firebase.auth.FirebaseAuth;
+
+import java.util.ArrayList;
 
 public class DashboardActivity extends AppCompatActivity {
     BottomNavigationView bottomNavigationView;
     ViewPager viewPager;
     ViewPagerAdapter viewPagerAdapter;
+    static SocketHandler socketHandler;
 
 
     @Override
