@@ -21,7 +21,7 @@ public class DashboardActivity extends AppCompatActivity {
     BottomNavigationView bottomNavigationView;
     ViewPager viewPager;
     ViewPagerAdapter viewPagerAdapter;
-    static SocketHandler socketHandler;
+    SocketHandler socketHandler;
 
 
     @Override
