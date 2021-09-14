@@ -15,7 +15,8 @@
         android:usesCleartextTraffic="true">
         <activity
             android:name=".CallActivity"
-            android:exported="true" />
+            android:exported="true"
+            android:theme="@style/Theme.WEBRTCDEMO.NoActionBar" />
         <activity
             android:name=".DashboardActivity"
             android:exported="true"

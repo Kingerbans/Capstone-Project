@@ -11,6 +11,7 @@ app.get('/',function(req,res){
     res.send("Welcome to my socket");
 });
 
+var sessions = [];
 
 io.on('connection', function (client) {
 

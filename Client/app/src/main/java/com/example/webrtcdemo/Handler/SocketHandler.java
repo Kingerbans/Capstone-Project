@@ -8,9 +8,9 @@ import io.socket.client.Socket;
 
 public class SocketHandler{
 
-    Socket socket;
+    public static Socket socket;
 
-    private static final String SIGNALING_URI = "http://192.168.1.110:3000";
+    public static final String SIGNALING_URI = "http://192.168.1.110:3000";
 
     public SocketHandler() {
         try {
@@ -20,12 +20,12 @@ public class SocketHandler{
         }
     }
 
-    public Socket getSocket() {
+    public static synchronized Socket getSocket() {
         return socket;
     }
 
-    public void setSocket(Socket socket) {
-        this.socket = socket;
+    public static synchronized void setSocket(Socket socket) {
+        SocketHandler.socket = socket;
     }
 
 

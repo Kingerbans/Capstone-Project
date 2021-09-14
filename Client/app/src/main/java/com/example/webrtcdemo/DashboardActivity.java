@@ -15,8 +15,6 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationBarView;
 import com.google.firebase.auth.FirebaseAuth;
 
-import java.util.ArrayList;
-
 public class DashboardActivity extends AppCompatActivity {
     BottomNavigationView bottomNavigationView;
     ViewPager viewPager;
@@ -60,6 +58,8 @@ public class DashboardActivity extends AppCompatActivity {
                 return true;
             }
         });
+        System.out.println("<----------------------------------------->");
+        System.out.println(socketHandler.getSocket());
     }
 
     private void setupViewPager() {

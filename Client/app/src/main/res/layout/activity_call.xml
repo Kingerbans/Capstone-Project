@@ -6,36 +6,49 @@
     android:layout_height="match_parent"
     tools:context=".CallActivity">
 
-    <WebView
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="#ccc">
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1">
 
-        <TextView
-            android:id="@+id/txtCalling"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:padding="20dp"
-            android:text="Someong is Calling"
-            android:textStyle="bold" />
+            <org.webrtc.SurfaceViewRenderer
+                android:id="@+id/local_surface_view"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
 
-        <ImageView
-            android:id="@+id/btnAccept"
-            android:layout_width="60dp"
-            android:layout_height="60dp"
-            android:background="@drawable/call" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:text="From camera"
+                android:layout_gravity="top|end"
+                android:textColor="#fff"
+                android:layout_margin="16dp"
+                android:layout_height="wrap_content" />
+        </FrameLayout>
 
-        <ImageView
-            android:id="@+id/btnReject"
-            android:layout_width="60dp"
-            android:layout_height="60dp"
-            android:background="@drawable/call" />
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1">
 
-    </RelativeLayout>
+            <org.webrtc.SurfaceViewRenderer
+                android:id="@+id/remote_surface_view"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
 
+            <TextView
+                android:layout_width="wrap_content"
+                android:text="From PeerConection"
+                android:layout_gravity="top|end"
+                android:textColor="#fff"
+                android:layout_margin="16dp"
+                android:layout_height="wrap_content" />
+        </FrameLayout>
+    </LinearLayout>
 
 </RelativeLayout>
