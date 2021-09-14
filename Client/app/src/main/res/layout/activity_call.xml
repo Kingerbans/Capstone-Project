@@ -6,49 +6,13 @@
     android:layout_height="match_parent"
     tools:context=".CallActivity">
 
-    <LinearLayout
+    <org.webrtc.SurfaceViewRenderer
+        android:id="@+id/localView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior">
-
-        <FrameLayout
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1">
-
-            <org.webrtc.SurfaceViewRenderer
-                android:id="@+id/local_surface_view"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:text="From camera"
-                android:layout_gravity="top|end"
-                android:textColor="#fff"
-                android:layout_margin="16dp"
-                android:layout_height="wrap_content" />
-        </FrameLayout>
-
-        <FrameLayout
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1">
-
-            <org.webrtc.SurfaceViewRenderer
-                android:id="@+id/remote_surface_view"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:text="From PeerConection"
-                android:layout_gravity="top|end"
-                android:textColor="#fff"
-                android:layout_margin="16dp"
-                android:layout_height="wrap_content" />
-        </FrameLayout>
-    </LinearLayout>
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
 </RelativeLayout>
