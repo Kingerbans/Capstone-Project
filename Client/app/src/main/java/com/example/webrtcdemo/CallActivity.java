@@ -1,6 +1,11 @@
 package com.example.webrtcdemo;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+
+import android.Manifest;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.util.Log;
 
@@ -63,12 +68,15 @@ public class CallActivity extends AppCompatActivity{
     SurfaceViewRenderer localView;
     SurfaceViewRenderer remoteView;
     MediaStream localMediaStream;
+    String textSDP;
     private boolean createOffer = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_call);
+
+        Permissions();
 
         eglBaseContext = EglBase.create().getEglBaseContext();
 
@@ -118,6 +126,15 @@ public class CallActivity extends AppCompatActivity{
         call();
     }
 
+    private void Permissions(){
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[] {Manifest.permission.CAMERA}, 50); }
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[] {Manifest.permission.RECORD_AUDIO}, 60); }
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.MODIFY_AUDIO_SETTINGS) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[] {Manifest.permission.MODIFY_AUDIO_SETTINGS}, 70); }
+    }
+
     private VideoCapturer createCameraCapturer(boolean isFront) {
         Camera1Enumerator enumerator = new Camera1Enumerator(false);
         final String[] deviceNames = enumerator.getDeviceNames();
@@ -158,29 +175,30 @@ public class CallActivity extends AppCompatActivity{
 
             @Override
             public void call(Object... args) {
+                JSONObject obj = (JSONObject) args[0];
                 try {
-                    JSONObject obj = (JSONObject) args[0];
-                    SessionDescription sdp = new SessionDescription(SessionDescription.Type.OFFER,
-                            obj.getString(SDP));
-                    peerConnection.setRemoteDescription(sdpObserver, sdp);
-                    peerConnection.createAnswer(sdpObserver, new MediaConstraints());
+                    textSDP = obj.getString(SDP);
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
+                SessionDescription sdp = new SessionDescription(SessionDescription.Type.OFFER, textSDP);
+                peerConnection.setRemoteDescription(sdpObserver, sdp);
+                peerConnection.createAnswer(sdpObserver, new MediaConstraints());
+
             }
 
         }).on(ANSWER, new Emitter.Listener() {
 
             @Override
             public void call(Object... args) {
+                JSONObject obj = (JSONObject) args[0];
                 try {
-                    JSONObject obj = (JSONObject) args[0];
-                    SessionDescription sdp = new SessionDescription(SessionDescription.Type.ANSWER,
-                            obj.getString(SDP));
-                    peerConnection.setRemoteDescription(sdpObserver, sdp);
+                    textSDP = obj.getString(SDP);
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
+                SessionDescription sdp = new SessionDescription(SessionDescription.Type.ANSWER, textSDP);
+                peerConnection.setRemoteDescription(sdpObserver, sdp);
             }
 
         }).on(CANDIDATE, new Emitter.Listener() {
@@ -189,9 +207,7 @@ public class CallActivity extends AppCompatActivity{
             public void call(Object... args) {
                 try {
                     JSONObject obj = (JSONObject) args[0];
-                    peerConnection.addIceCandidate(new IceCandidate(obj.getString(SDP_MID),
-                            obj.getInt(SDP_M_LINE_INDEX),
-                            obj.getString(SDP)));
+                    peerConnection.addIceCandidate(new IceCandidate(obj.getString(SDP_MID), obj.getInt(SDP_M_LINE_INDEX), obj.getString(SDP)));
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
