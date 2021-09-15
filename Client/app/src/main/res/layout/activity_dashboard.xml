@@ -6,6 +6,40 @@
     android:layout_height="match_parent"
     tools:context=".DashboardActivity">
 
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#ccc"
+        android:visibility="gone"
+        android:id="@+id/callLayout"
+        tools:ignore="MissingConstraints">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:text="Someone is calling..."
+            android:padding="20dp"
+            android:textStyle="bold"
+            android:id="@+id/incomingCallTxt" />
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_baseline_call_24"
+            android:id="@+id/btnAccept"
+            android:layout_toStartOf="@+id/btnReject"
+            android:padding="20dp" />
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_baseline_call_end_24"
+            android:id="@+id/btnReject"
+            android:padding="20dp"
+            android:layout_alignParentEnd="true" />
+
+    </RelativeLayout>
+
     <androidx.viewpager.widget.ViewPager
         android:id="@+id/viewPager"
         android:layout_width="match_parent"

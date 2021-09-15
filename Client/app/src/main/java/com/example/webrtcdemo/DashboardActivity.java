@@ -8,6 +8,9 @@ import androidx.viewpager.widget.ViewPager;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.ImageView;
+import android.widget.RelativeLayout;
 
 import com.example.webrtcdemo.Adapter.ViewPagerAdapter;
 import com.example.webrtcdemo.Handler.SocketHandler;
@@ -15,11 +18,16 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationBarView;
 import com.google.firebase.auth.FirebaseAuth;
 
+import io.socket.emitter.Emitter;
+
 public class DashboardActivity extends AppCompatActivity {
+    private static final String CALL = "call";
+    private static final String CALLACCEPT = "call-accept";
     BottomNavigationView bottomNavigationView;
     ViewPager viewPager;
     ViewPagerAdapter viewPagerAdapter;
-    SocketHandler socketHandler;
+    RelativeLayout relativeLayout;
+    ImageView btnAccept, btnReject;
 
 
     @Override
@@ -32,6 +40,9 @@ public class DashboardActivity extends AppCompatActivity {
 
         setupViewPager();
 
+        relativeLayout = findViewById(R.id.callLayout);
+        btnAccept = findViewById(R.id.btnAccept);
+        btnReject = findViewById(R.id.btnReject);
 
         bottomNavigationView.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
             @Override
@@ -58,8 +69,19 @@ public class DashboardActivity extends AppCompatActivity {
                 return true;
             }
         });
-        System.out.println("<----------------------------------------->");
-        System.out.println(socketHandler.getSocket());
+        SocketHandler.getSocket().on(CALL, new Emitter.Listener() {
+            @Override
+            public void call(Object... args) {
+                relativeLayout.setVisibility(View.VISIBLE);
+                btnAccept.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        SocketHandler.getSocket().emit(CALLACCEPT);
+                        startActivity(new Intent(DashboardActivity.this, CallActivity.class));
+                    }
+                });
+            }
+        });
     }
 
     private void setupViewPager() {

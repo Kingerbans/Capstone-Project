@@ -5,7 +5,6 @@ import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
 
-import android.telecom.Call;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,7 +21,6 @@ import com.example.webrtcdemo.R;
  */
 public class HomeFragment extends Fragment {
     Button btnCall;
-    SocketHandler socketHandler;
 
 
     // TODO: Rename parameter arguments, choose names that match
@@ -75,6 +73,7 @@ public class HomeFragment extends Fragment {
         btnCall.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                SocketHandler.getSocket().emit("call");
                 startActivity(new Intent(getActivity(), CallActivity.class));
             }
         });

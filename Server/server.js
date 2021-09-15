@@ -17,8 +17,12 @@ io.on('connection', function (client) {
 
     console.log('one user connected : ' + client.id);
 
-    client.on('call', function (details) {
-        client.emit('createoffer', {});
+    client.on('call', function () {
+        client.broadcast.emit("call");
+    });
+
+    client.on('call-accept', function (){
+        client.broadcast.emit('createoffer', {});
     });
 
     client.on('offer', function (details) {
