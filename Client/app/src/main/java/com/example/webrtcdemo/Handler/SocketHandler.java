@@ -1,6 +1,5 @@
 package com.example.webrtcdemo.Handler;
 
-import java.io.Serializable;
 import java.net.URISyntaxException;
 
 import io.socket.client.IO;

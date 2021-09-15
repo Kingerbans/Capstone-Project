@@ -28,6 +28,7 @@ public class DashboardActivity extends AppCompatActivity {
     ViewPagerAdapter viewPagerAdapter;
     RelativeLayout relativeLayout;
     ImageView btnAccept, btnReject;
+    Thread thread;
 
 
     @Override
@@ -69,17 +70,36 @@ public class DashboardActivity extends AppCompatActivity {
                 return true;
             }
         });
+
         SocketHandler.getSocket().on(CALL, new Emitter.Listener() {
             @Override
             public void call(Object... args) {
-                relativeLayout.setVisibility(View.VISIBLE);
-                btnAccept.setOnClickListener(new View.OnClickListener() {
+                thread = new Thread(){
                     @Override
-                    public void onClick(View view) {
-                        SocketHandler.getSocket().emit(CALLACCEPT);
-                        startActivity(new Intent(DashboardActivity.this, CallActivity.class));
+                    public void run() {
+                        synchronized (this) {
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    System.out.println("<---------------------------------0>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
+                                    relativeLayout.setVisibility(View.VISIBLE);
+                                    System.out.println("<---------------------------------1>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
+                                    btnAccept.setOnClickListener(new View.OnClickListener() {
+                                        @Override
+                                        public void onClick(View view) {
+                                            System.out.println("<---------------------------------2>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
+                                            SocketHandler.getSocket().emit(CALLACCEPT);
+                                            System.out.println("<---------------------------------3>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
+                                            startActivity(new Intent(DashboardActivity.this, CallActivity.class));
+                                        }
+                                    });
+                                }
+                            });
+
+                        }
                     }
-                });
+                };
+                thread.start();
             }
         });
     }
