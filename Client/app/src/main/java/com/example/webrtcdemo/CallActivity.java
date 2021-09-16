@@ -122,6 +122,7 @@ public class CallActivity extends AppCompatActivity{
                     btnAccept.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
+                            peerConnection.addStream(localMediaStream);
                             SocketHandler.getSocket().emit(CALLACCEPT);
                             linearLayout.setVisibility(View.GONE);
                         }
@@ -129,6 +130,8 @@ public class CallActivity extends AppCompatActivity{
                 }
             });
         } else {
+            createOffer = true;
+            peerConnection.createOffer(sdpObserver, new MediaConstraints());
             setContentView(R.layout.activity_call);
         }
 
@@ -196,15 +199,7 @@ public class CallActivity extends AppCompatActivity{
                 new MediaConstraints(),
                 peerConnectionObserver);
 
-        peerConnection.addStream(localMediaStream);
-        SocketHandler.getSocket().on(CREATEOFFER, new Emitter.Listener() {
-
-            @Override
-            public void call(Object... args) {
-                createOffer = true;
-                peerConnection.createOffer(sdpObserver, new MediaConstraints());
-            }
-        }).on(OFFER, new Emitter.Listener() {
+        SocketHandler.getSocket().on(OFFER, new Emitter.Listener() {
 
             @Override
             public void call(Object... args) {
@@ -239,6 +234,11 @@ public class CallActivity extends AppCompatActivity{
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
+            }
+        }).on(CALLACCEPT, new Emitter.Listener() {
+            @Override
+            public void call(Object... args) {
+                peerConnection.addStream(localMediaStream);
             }
         });
     }
