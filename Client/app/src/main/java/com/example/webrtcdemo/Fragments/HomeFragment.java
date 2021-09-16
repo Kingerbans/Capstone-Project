@@ -74,7 +74,9 @@ public class HomeFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 SocketHandler.getSocket().emit("call");
-                startActivity(new Intent(getActivity(), CallActivity.class));
+                Intent intent = new Intent(getActivity(), CallActivity.class);
+                intent.putExtra("Check-Caller", true);
+                startActivity(intent);
             }
         });
 

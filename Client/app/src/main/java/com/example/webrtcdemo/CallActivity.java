@@ -8,6 +8,10 @@ import android.Manifest;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.example.webrtcdemo.Handler.SocketHandler;
 
@@ -47,6 +51,7 @@ public class CallActivity extends AppCompatActivity{
     private static final String SDP_MID = "sdpMid";
     private static final String SDP_M_LINE_INDEX = "sdpMLineIndex";
     private static final String SDP = "sdp";
+    private static final String CALLACCEPT = "call-accept";
     private static final String CREATEOFFER = "createoffer";
     private static final String OFFER = "offer";
     private static final String ANSWER = "answer";
@@ -68,15 +73,17 @@ public class CallActivity extends AppCompatActivity{
     SurfaceViewRenderer localView;
     SurfaceViewRenderer remoteView;
     MediaStream localMediaStream;
-    String textSDP;
+    LinearLayout linearLayout;
+    ImageView btnAccept;
+    TextView textView;
+    boolean check;
     private boolean createOffer = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_call);
 
-        Permissions();
+        check = getIntent().getExtras().getBoolean("Check-Caller");
 
         eglBaseContext = EglBase.create().getEglBaseContext();
 
@@ -99,6 +106,33 @@ public class CallActivity extends AppCompatActivity{
         videoSource = peerConnectionFactory.createVideoSource(videoCapturer.isScreencast());
         videoCapturer.initialize(surfaceTextureHelper, getApplicationContext(), videoSource.getCapturerObserver());
         videoCapturer.startCapture(480, 640, 30);
+
+        if (!check) {
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    setContentView(R.layout.activity_call);
+
+                    linearLayout = findViewById(R.id.callLayout);
+                    btnAccept = findViewById(R.id.btnAccept);
+                    textView = findViewById(R.id.incomingCallTxt);
+
+                    linearLayout.setVisibility(View.VISIBLE);
+                    textView.setText("Someone is calling .....");
+                    btnAccept.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            SocketHandler.getSocket().emit(CALLACCEPT);
+                            linearLayout.setVisibility(View.GONE);
+                        }
+                    });
+                }
+            });
+        } else {
+            setContentView(R.layout.activity_call);
+        }
+
+        Permissions();
 
         localView = findViewById(R.id.localView);
         localView.setMirror(true);
@@ -170,37 +204,31 @@ public class CallActivity extends AppCompatActivity{
                 createOffer = true;
                 peerConnection.createOffer(sdpObserver, new MediaConstraints());
             }
-
         }).on(OFFER, new Emitter.Listener() {
 
             @Override
             public void call(Object... args) {
-                JSONObject obj = (JSONObject) args[0];
                 try {
-                    textSDP = obj.getString(SDP);
+                    JSONObject obj = (JSONObject) args[0];
+                    SessionDescription sdp = new SessionDescription(SessionDescription.Type.OFFER, obj.getString(SDP));
+                    peerConnection.setRemoteDescription(sdpObserver, sdp);
+                    peerConnection.createAnswer(sdpObserver, new MediaConstraints());
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
-                SessionDescription sdp = new SessionDescription(SessionDescription.Type.OFFER, textSDP);
-                peerConnection.setRemoteDescription(sdpObserver, sdp);
-                peerConnection.createAnswer(sdpObserver, new MediaConstraints());
-
             }
-
         }).on(ANSWER, new Emitter.Listener() {
 
             @Override
             public void call(Object... args) {
-                JSONObject obj = (JSONObject) args[0];
                 try {
-                    textSDP = obj.getString(SDP);
+                    JSONObject obj = (JSONObject) args[0];
+                    SessionDescription sdp = new SessionDescription(SessionDescription.Type.ANSWER, obj.getString(SDP));
+                    peerConnection.setRemoteDescription(sdpObserver, sdp);
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
-                SessionDescription sdp = new SessionDescription(SessionDescription.Type.ANSWER, textSDP);
-                peerConnection.setRemoteDescription(sdpObserver, sdp);
             }
-
         }).on(CANDIDATE, new Emitter.Listener() {
 
             @Override
@@ -212,7 +240,6 @@ public class CallActivity extends AppCompatActivity{
                     e.printStackTrace();
                 }
             }
-
         });
     }
 

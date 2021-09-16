@@ -22,11 +22,9 @@ import io.socket.emitter.Emitter;
 
 public class DashboardActivity extends AppCompatActivity {
     private static final String CALL = "call";
-    private static final String CALLACCEPT = "call-accept";
     BottomNavigationView bottomNavigationView;
     ViewPager viewPager;
     ViewPagerAdapter viewPagerAdapter;
-    RelativeLayout relativeLayout;
     ImageView btnAccept, btnReject;
 
 
@@ -39,8 +37,6 @@ public class DashboardActivity extends AppCompatActivity {
         viewPager = findViewById(R.id.viewPager);
 
         setupViewPager();
-
-        relativeLayout = findViewById(R.id.callLayout);
         btnAccept = findViewById(R.id.btnAccept);
         btnReject = findViewById(R.id.btnReject);
 
@@ -70,21 +66,15 @@ public class DashboardActivity extends AppCompatActivity {
             }
         });
 
-        btnAccept.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                SocketHandler.getSocket().emit(CALLACCEPT);
-                startActivity(new Intent(DashboardActivity.this, CallActivity.class));
-            }
-        });
-
         SocketHandler.getSocket().on(CALL, new Emitter.Listener() {
             @Override
             public void call(Object... args) {
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        relativeLayout.setVisibility(View.VISIBLE);
+                        Intent intent = new Intent(DashboardActivity.this, CallActivity.class);
+                        intent.putExtra("Check-Caller", false);
+                        startActivity(intent);
                     }
                 });
             }

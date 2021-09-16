@@ -51,4 +51,47 @@
         </FrameLayout>
     </LinearLayout>
 
+    <LinearLayout
+        android:id="@+id/callLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/white"
+        android:visibility="gone"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/incomingCallTxt"
+            android:layout_width="match_parent"
+            android:layout_height="502dp"
+            android:gravity="center"
+            android:padding="20dp"
+            android:textColor="@color/black"
+            android:textStyle="bold"
+            tools:text="Someone is calling..." />
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center">
+
+            <ImageView
+                android:id="@+id/btnAccept"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="40dp"
+                android:src="@drawable/ic_baseline_call_24" />
+
+            <ImageView
+                android:id="@+id/btnReject"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toRightOf="@+id/btnAccept"
+                android:padding="40dp"
+                android:src="@drawable/ic_baseline_call_end_24" />
+
+        </RelativeLayout>
+
+
+    </LinearLayout>
+
 </RelativeLayout>
