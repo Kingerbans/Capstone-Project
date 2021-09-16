@@ -22,7 +22,7 @@ io.on('connection', function (client) {
     });
 
     client.on('call-accept', function (){
-        client.broadcast.emit('createoffer', {});
+        client.broadcast.emit("call-accept");
     });
 
     client.on('offer', function (details) {

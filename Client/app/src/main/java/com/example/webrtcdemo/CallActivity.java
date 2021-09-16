@@ -107,34 +107,6 @@ public class CallActivity extends AppCompatActivity{
         videoCapturer.initialize(surfaceTextureHelper, getApplicationContext(), videoSource.getCapturerObserver());
         videoCapturer.startCapture(480, 640, 30);
 
-        if (!check) {
-            runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    setContentView(R.layout.activity_call);
-
-                    linearLayout = findViewById(R.id.callLayout);
-                    btnAccept = findViewById(R.id.btnAccept);
-                    textView = findViewById(R.id.incomingCallTxt);
-
-                    linearLayout.setVisibility(View.VISIBLE);
-                    textView.setText("Someone is calling .....");
-                    btnAccept.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-                            peerConnection.addStream(localMediaStream);
-                            SocketHandler.getSocket().emit(CALLACCEPT);
-                            linearLayout.setVisibility(View.GONE);
-                        }
-                    });
-                }
-            });
-        } else {
-            createOffer = true;
-            peerConnection.createOffer(sdpObserver, new MediaConstraints());
-            setContentView(R.layout.activity_call);
-        }
-
         Permissions();
 
         localView = findViewById(R.id.localView);
@@ -157,10 +129,37 @@ public class CallActivity extends AppCompatActivity{
 
         // add to Stream
         localMediaStream = peerConnectionFactory.createLocalMediaStream(mediaStreamLable);
-        localMediaStream.addTrack(videoTrack);
-        localMediaStream.addTrack(audioTrack);
 
         call();
+
+        if (!check) {
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    setContentView(R.layout.activity_call);
+
+                    linearLayout = findViewById(R.id.callLayout);
+                    btnAccept = findViewById(R.id.btnAccept);
+                    textView = findViewById(R.id.incomingCallTxt);
+
+                    linearLayout.setVisibility(View.VISIBLE);
+                    textView.setText("Someone is calling .....");
+                    btnAccept.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            localMediaStream.addTrack(videoTrack);
+                            localMediaStream.addTrack(audioTrack);
+                            SocketHandler.getSocket().emit(CALLACCEPT);
+                            linearLayout.setVisibility(View.GONE);
+                        }
+                    });
+                }
+            });
+        } else {
+            createOffer = true;
+            peerConnection.createOffer(sdpObserver, new MediaConstraints());
+            setContentView(R.layout.activity_call);
+        }
     }
 
     private void Permissions(){
@@ -198,6 +197,8 @@ public class CallActivity extends AppCompatActivity{
                 iceServers,
                 new MediaConstraints(),
                 peerConnectionObserver);
+
+        peerConnection.addStream(localMediaStream);
 
         SocketHandler.getSocket().on(OFFER, new Emitter.Listener() {
 
@@ -238,7 +239,8 @@ public class CallActivity extends AppCompatActivity{
         }).on(CALLACCEPT, new Emitter.Listener() {
             @Override
             public void call(Object... args) {
-                peerConnection.addStream(localMediaStream);
+                localMediaStream.addTrack(videoTrack);
+                localMediaStream.addTrack(audioTrack);
             }
         });
     }
