@@ -53,9 +53,11 @@ public class CallActivity extends AppCompatActivity{
     private static final String SDP = "sdp";
     private static final String CALLACCEPT = "call-accept";
     private static final String CREATEOFFER = "createoffer";
+    private static final String CREATERECEIVE = "call-receive";
     private static final String OFFER = "offer";
     private static final String ANSWER = "answer";
     private static final String CANDIDATE = "candidate";
+    private static final String CALL = "call";
 
     PeerConnectionFactory peerConnectionFactory;
     PeerConnectionFactory.Options options;
@@ -82,6 +84,7 @@ public class CallActivity extends AppCompatActivity{
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_call);
 
         check = getIntent().getExtras().getBoolean("Check-Caller");
 
@@ -129,37 +132,34 @@ public class CallActivity extends AppCompatActivity{
 
         // add to Stream
         localMediaStream = peerConnectionFactory.createLocalMediaStream(mediaStreamLable);
+        localMediaStream.addTrack(videoTrack);
+        localMediaStream.addTrack(audioTrack);
+
+        videoTrack.setEnabled(false);
+        audioTrack.setEnabled(false);
 
         call();
 
         if (!check) {
-            runOnUiThread(new Runnable() {
+            SocketHandler.getSocket().emit(CREATERECEIVE);
+            linearLayout = findViewById(R.id.callLayout);
+            btnAccept = findViewById(R.id.btnAccept);
+            textView = findViewById(R.id.incomingCallTxt);
+
+            linearLayout.setVisibility(View.VISIBLE);
+            textView.setText("Someone is calling .....");
+
+            btnAccept.setOnClickListener(new View.OnClickListener() {
                 @Override
-                public void run() {
-                    setContentView(R.layout.activity_call);
-
-                    linearLayout = findViewById(R.id.callLayout);
-                    btnAccept = findViewById(R.id.btnAccept);
-                    textView = findViewById(R.id.incomingCallTxt);
-
-                    linearLayout.setVisibility(View.VISIBLE);
-                    textView.setText("Someone is calling .....");
-                    btnAccept.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-                            localMediaStream.addTrack(videoTrack);
-                            localMediaStream.addTrack(audioTrack);
-                            SocketHandler.getSocket().emit(CALLACCEPT);
-                            linearLayout.setVisibility(View.GONE);
-                        }
-                    });
+                public void onClick(View view) {
+                    videoTrack.setEnabled(true);
+                    audioTrack.setEnabled(true);
+                    SocketHandler.getSocket().emit(CALLACCEPT);
+                    linearLayout.setVisibility(View.GONE);
                 }
             });
-        } else {
-            createOffer = true;
-            peerConnection.createOffer(sdpObserver, new MediaConstraints());
-            setContentView(R.layout.activity_call);
         }
+        else SocketHandler.getSocket().emit(CALL);
     }
 
     private void Permissions(){
@@ -199,8 +199,13 @@ public class CallActivity extends AppCompatActivity{
                 peerConnectionObserver);
 
         peerConnection.addStream(localMediaStream);
-
-        SocketHandler.getSocket().on(OFFER, new Emitter.Listener() {
+        SocketHandler.getSocket().on(CREATEOFFER, new Emitter.Listener() {
+            @Override
+            public void call(Object... args) {
+                createOffer = true;
+                peerConnection.createOffer(sdpObserver, new MediaConstraints());
+            }
+        }).on(OFFER, new Emitter.Listener() {
 
             @Override
             public void call(Object... args) {
@@ -239,8 +244,8 @@ public class CallActivity extends AppCompatActivity{
         }).on(CALLACCEPT, new Emitter.Listener() {
             @Override
             public void call(Object... args) {
-                localMediaStream.addTrack(videoTrack);
-                localMediaStream.addTrack(audioTrack);
+                videoTrack.setEnabled(true);
+                audioTrack.setEnabled(true);
             }
         });
     }

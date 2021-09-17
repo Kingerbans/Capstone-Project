@@ -69,14 +69,9 @@ public class DashboardActivity extends AppCompatActivity {
         SocketHandler.getSocket().on(CALL, new Emitter.Listener() {
             @Override
             public void call(Object... args) {
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        Intent intent = new Intent(DashboardActivity.this, CallActivity.class);
-                        intent.putExtra("Check-Caller", false);
-                        startActivity(intent);
-                    }
-                });
+                Intent intent = new Intent(DashboardActivity.this, CallActivity.class);
+                intent.putExtra("Check-Caller", false);
+                startActivity(intent);
             }
         });
     }

@@ -73,7 +73,6 @@ public class HomeFragment extends Fragment {
         btnCall.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                SocketHandler.getSocket().emit("call");
                 Intent intent = new Intent(getActivity(), CallActivity.class);
                 intent.putExtra("Check-Caller", true);
                 startActivity(intent);

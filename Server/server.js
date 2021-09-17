@@ -1,5 +1,5 @@
 var express    = require('express');        // call express
-var app        = express();  
+var app        = express();
 var http = require('http').Server(app);
 var io = require('socket.io')(http);
 var port = process.env.PORT || 3000;
@@ -22,7 +22,11 @@ io.on('connection', function (client) {
     });
 
     client.on('call-accept', function (){
-        client.broadcast.emit("call-accept");
+        client.broadcast.emit('call-accept');
+    });
+
+    client.on('call-receive', function (){
+        client.broadcast.emit('createoffer', {});
     });
 
     client.on('offer', function (details) {
@@ -34,7 +38,7 @@ io.on('connection', function (client) {
         client.broadcast.emit('answer', details);
         console.log('answer: ' + JSON.stringify(details));
     });
-    
+
     client.on('candidate', function (details) {
         client.broadcast.emit('candidate', details);
         console.log('candidate: ' + JSON.stringify(details));
