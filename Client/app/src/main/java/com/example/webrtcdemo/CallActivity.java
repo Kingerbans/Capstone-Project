@@ -320,6 +320,7 @@ public class CallActivity extends AppCompatActivity{
     }
 
     SdpObserver sdpObserver = new SdpObserver() {
+
         @Override
         public void onCreateSuccess(SessionDescription sessionDescription) {
             peerConnection.setLocalDescription(sdpObserver, sessionDescription);
