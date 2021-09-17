@@ -18,6 +18,9 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationBarView;
 import com.google.firebase.auth.FirebaseAuth;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import io.socket.emitter.Emitter;
 
 public class DashboardActivity extends AppCompatActivity {
@@ -69,9 +72,16 @@ public class DashboardActivity extends AppCompatActivity {
         SocketHandler.getSocket().on(CALL, new Emitter.Listener() {
             @Override
             public void call(Object... args) {
-                Intent intent = new Intent(DashboardActivity.this, CallActivity.class);
-                intent.putExtra("Check-Caller", false);
-                startActivity(intent);
+                try {
+                    JSONObject obj = (JSONObject) args[0];
+                    System.out.println(obj.getString("fullname"));
+                    Intent intent = new Intent(DashboardActivity.this, CallActivity.class);
+                    intent.putExtra("Check-Caller", false);
+                    intent.putExtra("fullname", obj.getString("fullname"));
+                    startActivity(intent);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
             }
         });
     }

@@ -24,11 +24,11 @@
 
             <TextView
                 android:layout_width="wrap_content"
-                android:text="From camera"
+                android:layout_height="wrap_content"
                 android:layout_gravity="top|end"
-                android:textColor="#fff"
                 android:layout_margin="16dp"
-                android:layout_height="wrap_content" />
+                android:text="From camera"
+                android:textColor="#fff" />
         </FrameLayout>
 
         <FrameLayout
@@ -43,11 +43,45 @@
 
             <TextView
                 android:layout_width="wrap_content"
-                android:text="From PeerConection"
+                android:layout_height="wrap_content"
                 android:layout_gravity="top|end"
-                android:textColor="#fff"
                 android:layout_margin="16dp"
-                android:layout_height="wrap_content" />
+                android:text="From PeerConection"
+                android:textColor="#fff" />
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="200dp"
+                android:gravity="center">
+
+                <ImageView
+                    android:id="@+id/btnCamera"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    app:srcCompat="@drawable/camera_off_icon"
+                    app:tint="@color/darkgrey" />
+
+
+                <ImageView
+                    android:id="@+id/btnMic"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_marginLeft="80dp"
+                    android:layout_toRightOf="@+id/btnCamera"
+                    app:srcCompat="@drawable/mic_off_icon"
+                    app:tint="@color/darkgrey"/>
+
+                <ImageView
+                    android:id="@+id/btnEndCall"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_marginLeft="80dp"
+                    android:layout_toRightOf="@+id/btnMic"
+                    app:srcCompat="@drawable/ic_baseline_call_end_24" />
+
+            </RelativeLayout>
+
         </FrameLayout>
     </LinearLayout>
 
@@ -56,8 +90,8 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/white"
-        android:visibility="gone"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:visibility="gone">
 
         <TextView
             android:id="@+id/incomingCallTxt"

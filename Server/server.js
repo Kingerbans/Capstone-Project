@@ -17,8 +17,8 @@ io.on('connection', function (client) {
 
     console.log('one user connected : ' + client.id);
 
-    client.on('call', function () {
-        client.broadcast.emit("call");
+    client.on('call', function (fullname) {
+        client.broadcast.emit('call', {fullname: fullname});
     });
 
     client.on('call-accept', function (){

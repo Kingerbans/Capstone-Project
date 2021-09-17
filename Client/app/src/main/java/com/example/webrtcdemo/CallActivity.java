@@ -1,5 +1,6 @@
 package com.example.webrtcdemo;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
@@ -14,6 +15,13 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.example.webrtcdemo.Handler.SocketHandler;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -59,6 +67,8 @@ public class CallActivity extends AppCompatActivity{
     private static final String CANDIDATE = "candidate";
     private static final String CALL = "call";
 
+    FirebaseAuth firebaseAuth;
+    DatabaseReference databaseReference;
     PeerConnectionFactory peerConnectionFactory;
     PeerConnectionFactory.Options options;
     EglBase.Context eglBaseContext;
@@ -76,7 +86,7 @@ public class CallActivity extends AppCompatActivity{
     SurfaceViewRenderer remoteView;
     MediaStream localMediaStream;
     LinearLayout linearLayout;
-    ImageView btnAccept;
+    ImageView btnAccept, btnCamera, btnMic;
     TextView textView;
     boolean check;
     private boolean createOffer = false;
@@ -85,6 +95,8 @@ public class CallActivity extends AppCompatActivity{
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_call);
+
+        firebaseAuth = FirebaseAuth.getInstance();
 
         check = getIntent().getExtras().getBoolean("Check-Caller");
 
@@ -138,6 +150,48 @@ public class CallActivity extends AppCompatActivity{
         videoTrack.setEnabled(false);
         audioTrack.setEnabled(false);
 
+        btnCamera = findViewById(R.id.btnCamera);
+        btnMic = findViewById(R.id.btnMic);
+
+        btnCamera.setTag(R.drawable.camera_off_icon);
+        btnMic.setTag(R.drawable.mic_off_icon);
+
+        btnMic.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                int drawableId = (Integer)btnMic.getTag();
+                System.out.println("<-------------------------------->");
+                System.out.println(drawableId);
+                if (drawableId == 2131230877) {
+                    audioTrack.setEnabled(false);
+                    btnMic.setImageResource(R.drawable.mic_on_icon);
+                    btnMic.setTag(R.drawable.mic_on_icon);
+                } else {
+                    audioTrack.setEnabled(true);
+                    btnMic.setImageResource(R.drawable.mic_off_icon);
+                    btnMic.setTag(R.drawable.mic_off_icon);
+                }
+            }
+        });
+
+        btnCamera.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                int drawableId = (Integer)btnCamera.getTag();
+                System.out.println("<-------------------------------->");
+                System.out.println(drawableId);
+                if (drawableId == 2131230821) {
+                    videoTrack.setEnabled(false);
+                    btnCamera.setImageResource(R.drawable.camera_on_icon);
+                    btnCamera.setTag(R.drawable.camera_on_icon);
+                } else {
+                    videoTrack.setEnabled(true);
+                    btnCamera.setImageResource(R.drawable.camera_off_icon);
+                    btnCamera.setTag(R.drawable.camera_off_icon);
+                }
+            }
+        });
+
         call();
 
         if (!check) {
@@ -147,7 +201,7 @@ public class CallActivity extends AppCompatActivity{
             textView = findViewById(R.id.incomingCallTxt);
 
             linearLayout.setVisibility(View.VISIBLE);
-            textView.setText("Someone is calling .....");
+            textView.setText(getIntent().getExtras().getString("fullname") + " is calling .....");
 
             btnAccept.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -159,7 +213,22 @@ public class CallActivity extends AppCompatActivity{
                 }
             });
         }
-        else SocketHandler.getSocket().emit(CALL);
+        else {
+            FirebaseUser firebaseUser = firebaseAuth.getCurrentUser();
+            String userId = firebaseUser.getUid();
+            databaseReference = FirebaseDatabase.getInstance().getReference("Users").child(userId).child("fullname");
+            databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    SocketHandler.getSocket().emit(CALL, snapshot.getValue());
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+
+                }
+            });
+        }
     }
 
     private void Permissions(){
