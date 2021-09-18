@@ -3,15 +3,15 @@ package com.example.webrtcdemo.Model;
 public class Users {
     private String id;
     private String email;
-    private String fullname;
+    private String fullName;
 
     public Users() {
     }
 
-    public Users(String id, String email, String fullname) {
+    public Users(String id, String email, String fullName) {
         this.id = id;
         this.email = email;
-        this.fullname = fullname;
+        this.fullName = fullName;
     }
 
     public String getId() {
@@ -23,7 +23,7 @@ public class Users {
     }
 
     public String getFullName() {
-        return fullname;
+        return fullName;
     }
 
     public void setId(String id) {
@@ -34,8 +34,8 @@ public class Users {
         this.email = email;
     }
 
-    public void setFullName(String fullname) {
-        this.fullname = fullname;
+    public void setFullName(String fullName) {
+        this.fullName = fullName;
     }
 
 }

@@ -32,12 +32,20 @@
                 app:srcCompat="@drawable/mainicon" />
 
             <TextView
+                android:id="@+id/txtID"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:gravity="center" />
+
+            <TextView
                 android:id="@+id/textView2"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="10dp"
                 android:gravity="center"
-                android:text="Please enter a person name to start video call." />
+                android:text="Please share  your ID to start video call." />
 
             <EditText
                 android:id="@+id/edtTxtName"
@@ -47,7 +55,7 @@
                 android:layout_margin="10dp"
                 android:background="@drawable/textbox"
                 android:ems="10"
-                android:hint="Enter Name"
+                android:hint="Enter ID"
                 android:inputType="textPersonName"
                 android:padding="10dp" />
 

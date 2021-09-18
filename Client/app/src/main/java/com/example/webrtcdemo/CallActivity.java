@@ -1,6 +1,5 @@
 package com.example.webrtcdemo;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
@@ -16,12 +15,6 @@ import android.widget.TextView;
 
 import com.example.webrtcdemo.Handler.SocketHandler;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -59,16 +52,21 @@ public class CallActivity extends AppCompatActivity{
     private static final String SDP_MID = "sdpMid";
     private static final String SDP_M_LINE_INDEX = "sdpMLineIndex";
     private static final String SDP = "sdp";
-    private static final String CALLACCEPT = "call-accept";
-    private static final String CREATEOFFER = "createoffer";
-    private static final String CREATERECEIVE = "call-receive";
+    private static final String CALLACCEPT = "callAccept";
+    private static final String CREATEOFFER = "createOffer";
+    private static final String CREATERECEIVE = "callReceive";
     private static final String OFFER = "offer";
     private static final String ANSWER = "answer";
     private static final String CANDIDATE = "candidate";
     private static final String CALL = "call";
+    private static final String SOCKETID = "socketId";
+    private static final String FULLNAME = "fullName";
+    private static final String CALLREJECT = "callReject";
+    private static final String CALLFAIL = "callFail";
+    private static final String CHECKCALLER = "checkCaller";
+    private static final String CALLEND = "callEnd";
 
     FirebaseAuth firebaseAuth;
-    DatabaseReference databaseReference;
     PeerConnectionFactory peerConnectionFactory;
     PeerConnectionFactory.Options options;
     EglBase.Context eglBaseContext;
@@ -86,7 +84,7 @@ public class CallActivity extends AppCompatActivity{
     SurfaceViewRenderer remoteView;
     MediaStream localMediaStream;
     LinearLayout linearLayout;
-    ImageView btnAccept, btnCamera, btnMic;
+    ImageView btnAccept, btnCamera, btnMic, btnReject, btnEndCall;
     TextView textView;
     boolean check;
     private boolean createOffer = false;
@@ -98,7 +96,7 @@ public class CallActivity extends AppCompatActivity{
 
         firebaseAuth = FirebaseAuth.getInstance();
 
-        check = getIntent().getExtras().getBoolean("Check-Caller");
+        check = getIntent().getExtras().getBoolean(CHECKCALLER);
 
         eglBaseContext = EglBase.create().getEglBaseContext();
 
@@ -152,6 +150,7 @@ public class CallActivity extends AppCompatActivity{
 
         btnCamera = findViewById(R.id.btnCamera);
         btnMic = findViewById(R.id.btnMic);
+        btnEndCall = findViewById(R.id.btnEndCall);
 
         btnCamera.setTag(R.drawable.camera_off_icon);
         btnMic.setTag(R.drawable.mic_off_icon);
@@ -160,8 +159,6 @@ public class CallActivity extends AppCompatActivity{
             @Override
             public void onClick(View view) {
                 int drawableId = (Integer)btnMic.getTag();
-                System.out.println("<-------------------------------->");
-                System.out.println(drawableId);
                 if (drawableId == 2131230877) {
                     audioTrack.setEnabled(false);
                     btnMic.setImageResource(R.drawable.mic_on_icon);
@@ -178,8 +175,6 @@ public class CallActivity extends AppCompatActivity{
             @Override
             public void onClick(View view) {
                 int drawableId = (Integer)btnCamera.getTag();
-                System.out.println("<-------------------------------->");
-                System.out.println(drawableId);
                 if (drawableId == 2131230821) {
                     videoTrack.setEnabled(false);
                     btnCamera.setImageResource(R.drawable.camera_on_icon);
@@ -192,16 +187,25 @@ public class CallActivity extends AppCompatActivity{
             }
         });
 
+        btnEndCall.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                SocketHandler.getSocket().emit(CALLEND);
+                stop();
+            }
+        });
+
         call();
 
         if (!check) {
             SocketHandler.getSocket().emit(CREATERECEIVE);
             linearLayout = findViewById(R.id.callLayout);
             btnAccept = findViewById(R.id.btnAccept);
+            btnReject = findViewById(R.id.btnReject);
             textView = findViewById(R.id.incomingCallTxt);
 
             linearLayout.setVisibility(View.VISIBLE);
-            textView.setText(getIntent().getExtras().getString("fullname") + " is calling .....");
+            textView.setText(getIntent().getExtras().getString(FULLNAME) + " is calling .....");
 
             btnAccept.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -212,22 +216,17 @@ public class CallActivity extends AppCompatActivity{
                     linearLayout.setVisibility(View.GONE);
                 }
             });
-        }
-        else {
-            FirebaseUser firebaseUser = firebaseAuth.getCurrentUser();
-            String userId = firebaseUser.getUid();
-            databaseReference = FirebaseDatabase.getInstance().getReference("Users").child(userId).child("fullname");
-            databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull DataSnapshot snapshot) {
-                    SocketHandler.getSocket().emit(CALL, snapshot.getValue());
-                }
 
+            btnReject.setOnClickListener(new View.OnClickListener() {
                 @Override
-                public void onCancelled(@NonNull DatabaseError error) {
-
+                public void onClick(View view) {
+                    SocketHandler.getSocket().emit(CALLREJECT);
+                    stop();
                 }
             });
+        }
+        else {
+            SocketHandler.getSocket().emit(CALL, getIntent().getExtras().getString(SOCKETID));
         }
     }
 
@@ -256,6 +255,11 @@ public class CallActivity extends AppCompatActivity{
         }
 
         return null;
+    }
+
+    private void stop() {
+        peerConnection.close();
+        finish();
     }
 
     private void call() {
@@ -311,10 +315,29 @@ public class CallActivity extends AppCompatActivity{
                 }
             }
         }).on(CALLACCEPT, new Emitter.Listener() {
+
             @Override
             public void call(Object... args) {
                 videoTrack.setEnabled(true);
                 audioTrack.setEnabled(true);
+            }
+        }).on(CALLFAIL, new Emitter.Listener() {
+
+            @Override
+            public void call(Object... args) {
+                stop();
+            }
+        }).on(CALLREJECT, new Emitter.Listener() {
+
+            @Override
+            public void call(Object... args) {
+                stop();
+            }
+        }).on(CALLEND, new Emitter.Listener() {
+
+            @Override
+            public void call(Object... args) {
+                stop();
             }
         });
     }

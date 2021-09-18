@@ -17,14 +17,27 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
+import io.socket.emitter.Emitter;
 
 public class LoginActivity extends AppCompatActivity {
+    private static final String LOGIN = "login";
+    private static final String SOCKETID = "socketId";
+    private static final String Users = "Users";
+    private static final String FULLNAME = "fullName";
     EditText edtTxtEmail, edtTxtPassword;
     TextView txtError;
     Button btnLogin, btnRegister, btnBack;
     Dialog myDialog;
     ProgressDialog progressDialog;
     FirebaseAuth firebaseAuth;
+    DatabaseReference databaseReference;
     SocketHandler socketHandler;
 
     @Override
@@ -71,8 +84,33 @@ public class LoginActivity extends AppCompatActivity {
                     if (task.isSuccessful()){
                         socketHandler = new SocketHandler();
                         socketHandler.getSocket().connect();
-                        startActivity(new Intent(LoginActivity.this, DashboardActivity.class));
-                        finish();
+
+                        FirebaseUser firebaseUser = firebaseAuth.getCurrentUser();
+                        String userId = firebaseUser.getUid();
+                        databaseReference = FirebaseDatabase.getInstance().getReference(Users).child(userId).child(FULLNAME);
+                        databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                SocketHandler.getSocket().emit(LOGIN, snapshot.getValue());
+                            }
+
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError error) {
+
+                            }
+                        });
+
+                        socketHandler.getSocket().on(LOGIN, new Emitter.Listener() {
+                            @Override
+                            public void call(Object... args) {
+                                String id = (String)args[0];
+                                Intent intent = new Intent(LoginActivity.this, DashboardActivity.class);
+                                intent.putExtra(SOCKETID, id);
+                                startActivity(intent);
+                                finish();
+
+                            }
+                        });
                     } else {
                         popUp(task.getException().getLocalizedMessage());
                     }

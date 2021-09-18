@@ -11,22 +11,39 @@ app.get('/',function(req,res){
     res.send("Welcome to my socket");
 });
 
-var sessions = [];
+var onlineUsers = {};
 
 io.on('connection', function (client) {
-
+    
     console.log('one user connected : ' + client.id);
 
-    client.on('call', function (fullname) {
-        client.broadcast.emit('call', {fullname: fullname});
+    client.on('login', function (fullname) {
+        onlineUsers[client.id] = fullname;
+        client.emit('login', client.id);
     });
 
-    client.on('call-accept', function (){
-        client.broadcast.emit('call-accept');
+    client.on('call', function (id) {
+        if (id != client.id && onlineUsers[id]) {
+            client.broadcast.emit('call', onlineUsers[client.id]);
+        } else {
+            client.emit('callFail');
+        }
     });
 
-    client.on('call-receive', function (){
-        client.broadcast.emit('createoffer', {});
+    client.on('callReject', function (){
+        client.broadcast.emit('callReject');
+    });
+
+    client.on('callEnd', function (){
+        client.broadcast.emit('callEnd');
+    });
+
+    client.on('callAccept', function (){
+        client.broadcast.emit('callAccept');
+    });
+
+    client.on('callReceive', function (){
+        client.broadcast.emit('createOffer', {});
     });
 
     client.on('offer', function (details) {

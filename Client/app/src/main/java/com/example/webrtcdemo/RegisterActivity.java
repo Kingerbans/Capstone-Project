@@ -91,7 +91,7 @@ public class RegisterActivity extends AppCompatActivity {
                                 HashMap<String, String> hashMap = new HashMap<>();
                                 hashMap.put("id", userId);
                                 hashMap.put("email", email);
-                                hashMap.put("fullname", fullName);
+                                hashMap.put("fullName", fullName);
 
                                 databaseReference.setValue(hashMap).addOnCompleteListener(new OnCompleteListener<Void>() {
                                     @Override
