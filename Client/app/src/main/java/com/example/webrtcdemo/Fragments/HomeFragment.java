@@ -1,5 +1,7 @@
 package com.example.webrtcdemo.Fragments;
 
+import android.content.ClipData;
+import android.content.ClipboardManager;
 import android.content.Intent;
 import android.os.Bundle;
 
@@ -11,6 +13,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.webrtcdemo.CallActivity;
 import com.example.webrtcdemo.Handler.SocketHandler;
@@ -22,7 +25,7 @@ import com.example.webrtcdemo.R;
  * create an instance of this fragment.
  */
 public class HomeFragment extends Fragment {
-    Button btnCall;
+    Button btnCall, btnCopy;
     EditText edtTxtName;
     TextView txtID;
     private static final String SOCKETID = "socketId";
@@ -80,6 +83,7 @@ public class HomeFragment extends Fragment {
         id = getArguments().getString(SOCKETID);
 
         btnCall = view.findViewById(R.id.btnCall);
+        btnCopy = view.findViewById(R.id.btnCopy);
         edtTxtName = view.findViewById(R.id.edtTxtName);
         txtID = view.findViewById(R.id.txtID);
 
@@ -92,6 +96,16 @@ public class HomeFragment extends Fragment {
                 intent.putExtra(CHECKCALLER, true);
                 intent.putExtra(SOCKETID, edtTxtName.getText().toString());
                 startActivity(intent);
+            }
+        });
+
+        btnCopy.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Toast.makeText(view.getContext(), "Copied!", Toast.LENGTH_SHORT).show();
+                ClipboardManager clipboard = (ClipboardManager) view.getContext().getSystemService(view.getContext().CLIPBOARD_SERVICE);
+                ClipData clip = ClipData.newPlainText("id", id);
+                clipboard.setPrimaryClip(clip);
             }
         });
 

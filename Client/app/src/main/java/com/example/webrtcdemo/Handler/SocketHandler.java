@@ -9,7 +9,7 @@ public class SocketHandler{
 
     public static Socket socket;
 
-    public static final String SIGNALING_URI = "http://192.168.1.105:3000";
+    public static final String SIGNALING_URI = "https://fptcapstoneproject.herokuapp.com/";
 
     public SocketHandler() {
         try {
