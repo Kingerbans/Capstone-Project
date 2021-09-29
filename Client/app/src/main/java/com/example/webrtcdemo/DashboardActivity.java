@@ -63,6 +63,7 @@ public class DashboardActivity extends AppCompatActivity {
                         break;
 
                     case R.id.menuLogout:
+                        SocketHandler.getSocket().disconnect();
                         FirebaseAuth.getInstance().signOut();
                         startActivity(new Intent(DashboardActivity.this, LoginActivity.class));
                         finish();
