@@ -22,43 +22,48 @@ io.on('connection', function (client) {
         client.emit('login', client.id);
     });
 
-    client.on('call', function (id) {
-        if (id != client.id && onlineUsers[id]) {
-            client.broadcast.emit('call', onlineUsers[client.id]);
-        } else {
-            client.emit('callFail');
+    client.on('disconnect', function() {
+        delete onlineUsers[client.id];
+    });
+    
+    client.on('call', function (toId) {
+        if (toId != client.id && onlineUsers[toId]) {
+            io.to(toId).emit('call', {'fullName': onlineUsers[client.id], 'fromId': client.id});
         }
     });
 
-    client.on('callReject', function (){
-        client.broadcast.emit('callReject');
+    client.on('callReject', function (toId){
+        io.to(toId).emit('callReject');
     });
 
-    client.on('callEnd', function (){
-        client.broadcast.emit('callEnd');
+    client.on('callEnd', function (toId){
+        io.to(toId).emit('callEnd');
     });
 
-    client.on('callAccept', function (){
-        client.broadcast.emit('callAccept');
+    client.on('callAccept', function (toId){
+        io.to(toId).emit('callAccept');
     });
 
-    client.on('callReceive', function (){
-        client.broadcast.emit('createOffer', {});
+    client.on('callReceive', function (toId){
+        io.to(toId).emit('createOffer', {'fromId': client.id});
     });
 
     client.on('offer', function (details) {
-        client.broadcast.emit('offer', details);
-        console.log('offer: ' + JSON.stringify(details));
+        userId = details['fromId'];
+        details['fromId'] = client.id;
+        io.to(userId).emit('offer', details);
     });
 
     client.on('answer', function (details) {
-        client.broadcast.emit('answer', details);
-        console.log('answer: ' + JSON.stringify(details));
+        userId = details['fromId'];
+        details['fromId'] = client.id;
+        io.to(userId).emit('answer', details);
     });
 
     client.on('candidate', function (details) {
-        client.broadcast.emit('candidate', details);
-        console.log('candidate: ' + JSON.stringify(details));
+        userId = details['fromId'];
+        details['fromId'] = client.id;
+        io.to(userId).emit('candidate', details);
     });
 
     // when the client emits 'new message', this listens and executes
