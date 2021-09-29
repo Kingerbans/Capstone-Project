@@ -25,9 +25,7 @@ import io.socket.emitter.Emitter;
 
 public class DashboardActivity extends AppCompatActivity {
     private static final String CALL = "call";
-    private static final String SOCKETID = "socketId";
     private static final String CHECKCALLER = "checkCaller";
-    private static final String FULLNAME = "fullName";
     BottomNavigationView bottomNavigationView;
     ViewPager viewPager;
     ViewPagerAdapter viewPagerAdapter;
@@ -73,15 +71,12 @@ public class DashboardActivity extends AppCompatActivity {
             }
         });
 
-        viewPagerAdapter.setId(getIntent().getExtras().getString(SOCKETID));
-
         SocketHandler.getSocket().on(CALL, new Emitter.Listener() {
             @Override
             public void call(Object... args) {
-                String fullName = (String) args[0];
+                SocketHandler.setSocketObj((JSONObject) args[0]);
                 Intent intent = new Intent(DashboardActivity.this, CallActivity.class);
                 intent.putExtra(CHECKCALLER, false);
-                intent.putExtra(FULLNAME, fullName);
                 startActivity(intent);
             }
         });

@@ -28,7 +28,6 @@ import io.socket.emitter.Emitter;
 
 public class LoginActivity extends AppCompatActivity {
     private static final String LOGIN = "login";
-    private static final String SOCKETID = "socketId";
     private static final String Users = "Users";
     private static final String FULLNAME = "fullName";
     EditText edtTxtEmail, edtTxtPassword;
@@ -103,10 +102,8 @@ public class LoginActivity extends AppCompatActivity {
                         socketHandler.getSocket().on(LOGIN, new Emitter.Listener() {
                             @Override
                             public void call(Object... args) {
-                                String id = (String)args[0];
-                                Intent intent = new Intent(LoginActivity.this, DashboardActivity.class);
-                                intent.putExtra(SOCKETID, id);
-                                startActivity(intent);
+                                socketHandler.setSocketId((String)args[0]);
+                                startActivity(new Intent(LoginActivity.this, DashboardActivity.class));
                                 finish();
 
                             }

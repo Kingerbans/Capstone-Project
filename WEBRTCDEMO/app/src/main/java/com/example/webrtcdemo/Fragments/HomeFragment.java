@@ -28,11 +28,8 @@ public class HomeFragment extends Fragment {
     Button btnCall, btnCopy;
     EditText edtTxtName;
     TextView txtID;
-    private static final String SOCKETID = "socketId";
     private static final String CHECKCALLER = "checkCaller";
-
-    private String id;
-
+    private static final String toID = "toId";
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -80,21 +77,19 @@ public class HomeFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_home, container, false);
 
-        id = getArguments().getString(SOCKETID);
-
         btnCall = view.findViewById(R.id.btnCall);
         btnCopy = view.findViewById(R.id.btnCopy);
         edtTxtName = view.findViewById(R.id.edtTxtName);
         txtID = view.findViewById(R.id.txtID);
 
-        txtID.setText("ID: " + id);
+        txtID.setText("ID: " + SocketHandler.getSocketId());
 
         btnCall.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(getActivity(), CallActivity.class);
                 intent.putExtra(CHECKCALLER, true);
-                intent.putExtra(SOCKETID, edtTxtName.getText().toString());
+                intent.putExtra(toID, edtTxtName.getText().toString());
                 startActivity(intent);
             }
         });
@@ -104,7 +99,7 @@ public class HomeFragment extends Fragment {
             public void onClick(View view) {
                 Toast.makeText(view.getContext(), "Copied!", Toast.LENGTH_SHORT).show();
                 ClipboardManager clipboard = (ClipboardManager) view.getContext().getSystemService(view.getContext().CLIPBOARD_SERVICE);
-                ClipData clip = ClipData.newPlainText("id", id);
+                ClipData clip = ClipData.newPlainText("id", SocketHandler.getSocketId());
                 clipboard.setPrimaryClip(clip);
             }
         });

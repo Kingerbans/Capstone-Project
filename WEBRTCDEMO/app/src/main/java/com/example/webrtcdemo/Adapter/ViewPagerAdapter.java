@@ -13,19 +13,8 @@ import com.example.webrtcdemo.Fragments.UserFragment;
 
 public class ViewPagerAdapter extends FragmentStatePagerAdapter {
 
-    private String id;
-    private static final String SOCKETID = "socketId";
-
     public ViewPagerAdapter(@NonNull FragmentManager fm, int behavior) {
         super(fm, behavior);
-    }
-
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
     }
 
     @NonNull
@@ -33,11 +22,7 @@ public class ViewPagerAdapter extends FragmentStatePagerAdapter {
     public Fragment getItem(int position) {
         switch (position) {
             case 0:
-                Bundle bundle = new Bundle();
-                bundle.putString(SOCKETID, id);
-                HomeFragment honeFragment = new HomeFragment();
-                honeFragment.setArguments(bundle);
-                return honeFragment;
+                return new HomeFragment();
             case 1:
                 return new HistoryFragment();
             case 2:

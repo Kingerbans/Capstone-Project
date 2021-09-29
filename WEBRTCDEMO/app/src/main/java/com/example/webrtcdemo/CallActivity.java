@@ -59,10 +59,10 @@ public class CallActivity extends AppCompatActivity{
     private static final String ANSWER = "answer";
     private static final String CANDIDATE = "candidate";
     private static final String CALL = "call";
-    private static final String SOCKETID = "socketId";
+    private static final String toID = "toId";
+    private static final String fromID = "fromId";
     private static final String FULLNAME = "fullName";
     private static final String CALLREJECT = "callReject";
-    private static final String CALLFAIL = "callFail";
     private static final String CHECKCALLER = "checkCaller";
     private static final String CALLEND = "callEnd";
 
@@ -190,7 +190,11 @@ public class CallActivity extends AppCompatActivity{
         btnEndCall.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                SocketHandler.getSocket().emit(CALLEND);
+                try {
+                    SocketHandler.getSocket().emit(CALLEND, SocketHandler.getSocketObj().getString(fromID));
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
                 stop();
             }
         });
@@ -198,7 +202,11 @@ public class CallActivity extends AppCompatActivity{
         call();
 
         if (!check) {
-            SocketHandler.getSocket().emit(CREATERECEIVE);
+            try {
+                SocketHandler.getSocket().emit(CREATERECEIVE, SocketHandler.getSocketObj().getString(fromID));
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
             linearLayout = findViewById(R.id.callLayout);
             btnAccept = findViewById(R.id.btnAccept);
             btnReject = findViewById(R.id.btnReject);
@@ -212,7 +220,11 @@ public class CallActivity extends AppCompatActivity{
                 public void onClick(View view) {
                     videoTrack.setEnabled(true);
                     audioTrack.setEnabled(true);
-                    SocketHandler.getSocket().emit(CALLACCEPT);
+                    try {
+                        SocketHandler.getSocket().emit(CALLACCEPT, SocketHandler.getSocketObj().getString(fromID));
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
                     linearLayout.setVisibility(View.GONE);
                 }
             });
@@ -220,13 +232,17 @@ public class CallActivity extends AppCompatActivity{
             btnReject.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    SocketHandler.getSocket().emit(CALLREJECT);
+                    try {
+                        SocketHandler.getSocket().emit(CALLREJECT, SocketHandler.getSocketObj().getString(fromID));
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
                     stop();
                 }
             });
         }
         else {
-            SocketHandler.getSocket().emit(CALL, getIntent().getExtras().getString(SOCKETID));
+            SocketHandler.getSocket().emit(CALL, getIntent().getExtras().getString(toID));
         }
     }
 
@@ -275,6 +291,7 @@ public class CallActivity extends AppCompatActivity{
         SocketHandler.getSocket().on(CREATEOFFER, new Emitter.Listener() {
             @Override
             public void call(Object... args) {
+                SocketHandler.setSocketObj((JSONObject) args[0]);
                 createOffer = true;
                 peerConnection.createOffer(sdpObserver, new MediaConstraints());
             }
@@ -321,12 +338,6 @@ public class CallActivity extends AppCompatActivity{
                 videoTrack.setEnabled(true);
                 audioTrack.setEnabled(true);
             }
-        }).on(CALLFAIL, new Emitter.Listener() {
-
-            @Override
-            public void call(Object... args) {
-                stop();
-            }
         }).on(CALLREJECT, new Emitter.Listener() {
 
             @Override
@@ -350,6 +361,7 @@ public class CallActivity extends AppCompatActivity{
             try {
                 JSONObject obj = new JSONObject();
                 obj.put(SDP, sessionDescription.description);
+                obj.put(fromID, SocketHandler.getSocketObj().getString(fromID));
                 if (createOffer) {
                     SocketHandler.getSocket().emit(OFFER, obj);
                 } else {
@@ -404,6 +416,7 @@ public class CallActivity extends AppCompatActivity{
                 obj.put(SDP_MID, iceCandidate.sdpMid);
                 obj.put(SDP_M_LINE_INDEX, iceCandidate.sdpMLineIndex);
                 obj.put(SDP, iceCandidate.sdp);
+                obj.put(fromID, SocketHandler.getSocketObj().getString(fromID));
                 SocketHandler.getSocket().emit(CANDIDATE, obj);
             } catch (JSONException e) {
                 e.printStackTrace();
