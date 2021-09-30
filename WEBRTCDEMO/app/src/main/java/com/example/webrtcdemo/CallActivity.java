@@ -6,6 +6,7 @@ import androidx.core.content.ContextCompat;
 
 import android.Manifest;
 import android.content.pm.PackageManager;
+import android.media.AudioManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -77,6 +78,7 @@ public class CallActivity extends AppCompatActivity{
     VideoSource videoSource;
     VideoTrack videoTrack;
     AudioSource audioSource;
+    AudioManager audioManager;
     AudioTrack audioTrack;
     VideoTrack remoteVideoTrack;
     PeerConnection peerConnection;
@@ -95,6 +97,11 @@ public class CallActivity extends AppCompatActivity{
         setContentView(R.layout.activity_call);
 
         firebaseAuth = FirebaseAuth.getInstance();
+
+        audioManager = (AudioManager) getApplicationContext().getSystemService(getApplicationContext().AUDIO_SERVICE);
+        audioManager.setMode(AudioManager.MODE_NORMAL);
+        audioManager.setSpeakerphoneOn(true);
+
 
         check = getIntent().getExtras().getBoolean(CHECKCALLER);
 
