@@ -213,8 +213,11 @@ public class CallActivity extends AppCompatActivity{
             textView = findViewById(R.id.incomingCallTxt);
 
             linearLayout.setVisibility(View.VISIBLE);
-            textView.setText(getIntent().getExtras().getString(FULLNAME) + " is calling .....");
-
+            try {
+                textView.setText(SocketHandler.getSocketObj().getString(FULLNAME) + " is calling .....");
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
             btnAccept.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
