@@ -1,9 +1,5 @@
 package com.example.webrtcdemo;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
-
 import android.Manifest;
 import android.content.pm.PackageManager;
 import android.media.AudioManager;
@@ -13,10 +9,11 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import com.example.webrtcdemo.Handler.SocketHandler;
 import com.google.firebase.auth.FirebaseAuth;
-
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.webrtc.AudioSource;
@@ -39,9 +36,7 @@ import org.webrtc.SurfaceViewRenderer;
 import org.webrtc.VideoCapturer;
 import org.webrtc.VideoSource;
 import org.webrtc.VideoTrack;
-
 import java.util.ArrayList;
-
 import io.socket.emitter.Emitter;
 
 
@@ -60,7 +55,6 @@ public class CallActivity extends AppCompatActivity{
     private static final String ANSWER = "answer";
     private static final String CANDIDATE = "candidate";
     private static final String CALL = "call";
-    private static final String toID = "toId";
     private static final String fromID = "fromId";
     private static final String FULLNAME = "fullName";
     private static final String CALLREJECT = "callReject";
@@ -252,7 +246,7 @@ public class CallActivity extends AppCompatActivity{
             });
         }
         else {
-            SocketHandler.getSocket().emit(CALL, getIntent().getExtras().getString(toID));
+            SocketHandler.getSocket().emit(CALL, SocketHandler.getSocketId());
         }
     }
 

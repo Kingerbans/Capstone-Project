@@ -1,12 +1,9 @@
 package com.example.webrtcdemo.Adapter;
 
-import android.os.Bundle;
-
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentStatePagerAdapter;
-
 import com.example.webrtcdemo.Fragments.HistoryFragment;
 import com.example.webrtcdemo.Fragments.HomeFragment;
 import com.example.webrtcdemo.Fragments.UserFragment;

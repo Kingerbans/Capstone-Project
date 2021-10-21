@@ -4,21 +4,15 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentStatePagerAdapter;
 import androidx.viewpager.widget.ViewPager;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
-
 import com.example.webrtcdemo.Adapter.ViewPagerAdapter;
 import com.example.webrtcdemo.Handler.SocketHandler;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationBarView;
 import com.google.firebase.auth.FirebaseAuth;
-
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import io.socket.emitter.Emitter;
