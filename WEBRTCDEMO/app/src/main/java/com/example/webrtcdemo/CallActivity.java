@@ -56,6 +56,7 @@ public class CallActivity extends AppCompatActivity{
     private static final String CANDIDATE = "candidate";
     private static final String CALL = "call";
     private static final String fromID = "fromId";
+    private static final String toID = "toId";
     private static final String FULLNAME = "fullName";
     private static final String CALLREJECT = "callReject";
     private static final String CHECKCALLER = "checkCaller";
@@ -246,7 +247,7 @@ public class CallActivity extends AppCompatActivity{
             });
         }
         else {
-            SocketHandler.getSocket().emit(CALL, SocketHandler.getSocketId());
+            SocketHandler.getSocket().emit(CALL, getIntent().getExtras().getString(toID));
         }
     }
 

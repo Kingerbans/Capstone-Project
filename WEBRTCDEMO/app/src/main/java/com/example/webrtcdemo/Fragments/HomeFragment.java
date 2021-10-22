@@ -26,6 +26,7 @@ public class HomeFragment extends Fragment {
     EditText edtTxtName;
     TextView txtID;
     private static final String CHECKCALLER = "checkCaller";
+    private static final String toID = "toId";
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -85,6 +86,7 @@ public class HomeFragment extends Fragment {
             public void onClick(View view) {
                 Intent intent = new Intent(getActivity(), CallActivity.class);
                 intent.putExtra(CHECKCALLER, true);
+                intent.putExtra(toID, edtTxtName.getText().toString());
                 startActivity(intent);
             }
         });
